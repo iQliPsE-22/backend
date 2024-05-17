@@ -160,10 +160,10 @@ server.get("/list", async (req, res) => {
 });
 
 server.get("/", (req, res) => {
-  res.send("Server started and database is connected");
+  res.send("<h1>Server is running</h1>");
 });
 
-
-server.listen(8080, () => {
+server.listen(3000, () => {
   console.log("Server started on port 8080");
 });
+module.exports = server;
