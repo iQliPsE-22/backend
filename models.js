@@ -21,7 +21,10 @@ const StudentSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
   roll: String,
-  email: String,
+  email: {
+    type: String,
+    unique: true,
+  },
   dob: String,
   gender: String,
   college: String,
