@@ -8,9 +8,12 @@ const connectToDatabase = require("../db"); // Adjust the path as needed
 connectToDatabase();
 
 const server = express();
-server.use(cors());
 server.use(bodyParser.json());
-
+server.use(
+  cors({
+    origin: "*",
+  })
+);
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -164,6 +167,6 @@ server.get("/", (req, res) => {
 });
 
 server.listen(3000, () => {
-  console.log("Server started on port 8080");
+  console.log("Server started on port 3000");
 });
 module.exports = server;
