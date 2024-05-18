@@ -11,7 +11,6 @@ const server = express();
 
 // Middleware to parse JSON and handle CORS
 server.use(bodyParser.json());
-
 server.use(cors());
 
 // Configure multer for file uploads
