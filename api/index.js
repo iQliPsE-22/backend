@@ -9,7 +9,7 @@ connectToDatabase();
 
 const server = express();
 server.use(bodyParser.json());
-server.use(cors())
+server.use(cors());
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
@@ -53,6 +53,22 @@ server.post("/student", upload.single("profilePicture"), async (req, res) => {
   }
 });
 
+server.post("/student-login", async (req, res) => {
+  try {
+    const { roll, password } = req.body;
+    const student = await Student.findOne({ roll });
+    if (!student) {
+      return res.status(401).json({ message: "Student not found" });
+    }
+    if (student.password !== password) {
+      return res.status(401).json({ message: "Incorrect password" });
+    }
+    res.status(200).json({ message: "Student logged in successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Error logging in student" });
+  }
+});
+
 server.post("/admin", upload.single("profilePicture"), async (req, res) => {
   try {
     const { firstName, lastName, email, phone, password, confirm } = req.body;
@@ -75,6 +91,22 @@ server.post("/admin", upload.single("profilePicture"), async (req, res) => {
     res.status(201).json({ message: "Admin created successfully" });
   } catch (error) {
     res.status(500).json({ error: "Error creating admin" });
+  }
+});
+
+server.post("/admin-login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const admin = await Admin.findOne({ email });
+    if (!admin) {
+      return res.status(401).json({ message: "Admin not found" });
+    }
+    if (admin.password !== password) {
+      return res.status(401).json({ message: "Incorrect password" });
+    }
+    res.status(200).json({ message: "Admin logged in successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Error logging in admin" });
   }
 });
 
