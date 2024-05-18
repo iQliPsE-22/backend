@@ -104,7 +104,7 @@ server.post("/admin-login", async (req, res) => {
     if (admin.password !== password) {
       return res.status(401).json({ message: "Incorrect password" });
     }
-    res.status(200).json({ message: "Admin logged in successfully" });
+    res.status(200).json({ message: "Admin logged in successfully", admin });
   } catch (error) {
     res.status(500).json({ error: "Error logging in admin" });
   }
