@@ -13,7 +13,7 @@ const server = express();
 server.use(bodyParser.json());
 server.use(
   cors({
-    origin: "*", // Allow all origins; change this in production
+    origin: "", // Allow all origins; change this in production
   })
 );
 
