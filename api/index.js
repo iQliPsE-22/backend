@@ -1,27 +1,32 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require("cors"); // Allow anyone for the request
-const multer = require("multer"); // Allow image to be uploaded to the database
+const cors = require("cors");
+const multer = require("multer");
 const { Admin, Student, List, Announcement } = require("../models");
 const connectToDatabase = require("../db"); // Adjust the path as needed
 
 connectToDatabase();
 
 const server = express();
+
+// Middleware to parse JSON and handle CORS
 server.use(bodyParser.json());
 server.use(
   cors({
-    origin: "*",
+    origin: "*", // Allow all origins; change this in production
   })
 );
+
+// Configure multer for file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// ROUTES
+// Routes
 server.post("/student", upload.single("profilePicture"), async (req, res) => {
   try {
     console.log("Received request body:", req.body);
     console.log("Received file:", req.file);
+
     const {
       firstName,
       lastName,
@@ -34,6 +39,7 @@ server.post("/student", upload.single("profilePicture"), async (req, res) => {
       stream,
       semester,
     } = req.body;
+
     const student = new Student({
       profilePicture: {
         data: req.file.buffer,
@@ -50,6 +56,7 @@ server.post("/student", upload.single("profilePicture"), async (req, res) => {
       stream,
       semester,
     });
+
     await student.save();
     res.status(201).json({ message: "Student created successfully" });
   } catch (error) {
@@ -75,25 +82,25 @@ server.post("/admin", upload.single("profilePicture"), async (req, res) => {
     });
 
     await admin.save();
-
     res.status(201).json({ message: "Admin created successfully" });
   } catch (error) {
     res.status(500).json({ error: "Error creating admin" });
   }
 });
 
-// CRUD - Create List
 server.post("/list", async (req, res) => {
   try {
     const { enrollmentId, name, marks1, marks2 } = req.body;
-    const list = new List();
-    list.enrollmentId = enrollmentId;
-    list.name = name;
-    list.marks1 = marks1;
-    list.marks2 = marks2;
 
-    const ans = await list.save();
-    console.log(ans);
+    const list = new List({
+      enrollmentId,
+      name,
+      marks1,
+      marks2,
+    });
+
+    const savedList = await list.save();
+    console.log(savedList);
     res.status(201).json({ message: "List item created successfully" });
   } catch (error) {
     res.status(500).json({ error: "Error creating list item" });
@@ -105,7 +112,7 @@ server.delete("/list/:enrollmentId", async (req, res) => {
     const { enrollmentId } = req.params;
     await List.deleteOne({ enrollmentId });
     res.status(200).json({ message: "List item deleted successfully" });
-    console.log(enrollmentId + ":Deleted");
+    console.log(enrollmentId + ": Deleted");
   } catch (error) {
     res.status(500).json({ error: "Error deleting list item" });
   }
@@ -129,10 +136,11 @@ server.post("/announcement", upload.single("file"), async (req, res) => {
     await announcementData.save();
     res.status(201).json({ message: "Announcement created successfully" });
   } catch (error) {
-    console.error("Error creating attendance:", error);
-    res.status(500).json({ error: "Error creating Announcement" });
+    console.error("Error creating announcement:", error);
+    res.status(500).json({ error: "Error creating announcement" });
   }
 });
+
 server.get("/announcement", async (req, res) => {
   try {
     const items = await Announcement.find();
@@ -141,7 +149,6 @@ server.get("/announcement", async (req, res) => {
     res.status(500).json({ error: "Error fetching announcement data" });
   }
 });
-// CRUD - Create Student
 
 server.get("/admin", async (req, res) => {
   const docs = await Admin.find();
@@ -169,4 +176,5 @@ server.get("/", (req, res) => {
 server.listen(3000, () => {
   console.log("Server started on port 3000");
 });
+
 module.exports = server;
