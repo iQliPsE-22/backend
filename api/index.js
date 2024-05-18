@@ -11,11 +11,8 @@ const server = express();
 
 // Middleware to parse JSON and handle CORS
 server.use(bodyParser.json());
-server.use(
-  cors({
-    origin: "", // Allow all origins; change this in production
-  })
-);
+
+server.use(cors());
 
 // Configure multer for file uploads
 const storage = multer.memoryStorage();
