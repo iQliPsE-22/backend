@@ -29,6 +29,7 @@ server.post("/student", upload.single("profilePicture"), async (req, res) => {
       course,
       stream,
       semester,
+      password,
     } = req.body;
     const student = new Student({
       profilePicture: {
@@ -45,6 +46,7 @@ server.post("/student", upload.single("profilePicture"), async (req, res) => {
       course,
       stream,
       semester,
+      password,
     });
     await student.save();
     res.status(201).json({ message: "Student created successfully" });

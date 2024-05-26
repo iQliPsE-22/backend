@@ -31,6 +31,7 @@ const StudentSchema = new mongoose.Schema({
   course: String,
   stream: String,
   semester: String,
+  password: String,
 });
 
 const ListSchema = new mongoose.Schema({
